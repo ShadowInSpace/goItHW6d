@@ -38,7 +38,22 @@ public class ClientService {
     }
 
     public String getById(long id){
-        return null;
+        String queryR = "SELECT * from hw6d.client where id = ?;";
+        String name;
+        try (Connection connection = new Database().getConnection();
+             PreparedStatement statementRead = connection.prepareStatement(queryR)) {
+
+            statementRead.setLong(1, id);
+            ResultSet rs = statementRead.executeQuery();
+            rs.next();
+            name = rs.getString("name");
+
+            rs.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return name;
     }
 
     void setName(long id, String name){
