@@ -1,9 +1,12 @@
 package sqlServices;
 
+import dao.Client;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ClientService {
 
@@ -32,5 +35,21 @@ public class ClientService {
 
         return id;
 
+    }
+
+    public String getById(long id){
+        return null;
+    }
+
+    void setName(long id, String name){
+
+    }
+
+    void deleteById(long id){
+
+    }
+
+    List<Client> listAll(){
+        return null;
     }
 }
