@@ -47,3 +47,6 @@ gradlew.bat
 settings.gradle
 gradlew
 src/main/java/org/example/Main.java
+src/main/java/sqlServices/DatabaseInitService.java
+src/main/java/sqlServices/DatabasePopulateService.java
+src/main/java/sqlServices/Main.java
