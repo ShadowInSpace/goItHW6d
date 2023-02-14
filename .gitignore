@@ -43,3 +43,7 @@ bin/
 /.idea/
 /gradle/
 /sql/
+gradlew.bat
+settings.gradle
+gradlew
+src/main/java/org/example/Main.java
