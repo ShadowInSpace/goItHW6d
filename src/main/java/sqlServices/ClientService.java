@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientService {
@@ -14,7 +15,7 @@ public class ClientService {
         String query = "INSERT INTO hw6d.client (NAME) VALUES (?);";
         String queryR = "SELECT * from hw6d.client where name = ?;";
         long id;
-        if(name.isBlank() || 2<=name.length() || name.length()<=1000) throw new IllegalArgumentException();
+        if (name.isBlank() || name.length() < 2 || name.length() > 1000) throw new IllegalArgumentException();
 
         try (Connection connection = new Database().getConnection();
              PreparedStatement statementWrite = connection.prepareStatement(query);
@@ -37,7 +38,8 @@ public class ClientService {
 
     }
 
-    public String getById(long id){
+    public String getById(long id) {
+        if (id < 0) throw new IllegalArgumentException();
         String queryR = "SELECT * from hw6d.client where id = ?;";
         String name;
         try (Connection connection = new Database().getConnection();
@@ -56,15 +58,56 @@ public class ClientService {
         return name;
     }
 
-    void setName(long id, String name){
+    void setName(long id, String name) {
+        if (name.isBlank() || name.length() < 2 || name.length() > 1000) throw new IllegalArgumentException();
+        if (id < 0) throw new IllegalArgumentException();
 
+        String query = "Update hw6d.client set name = ? where id = ?;";
+
+        try (Connection connection = new Database().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, name);
+            statement.setLong(2, id);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    void deleteById(long id){
+    void deleteById(long id) {
+        if (id < 0) throw new IllegalArgumentException();
+        String query = "Delete from hw6d.client where id = ?;";
+        try (Connection connection = new Database().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
+            statement.setLong(1, id);
+
+            statement.execute();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    List<Client> listAll(){
-        return null;
+    List<Client> listAll() {
+        String query = "SELECT * FROM hw6d.client;";
+        List<Client> clientsList = new ArrayList<>();
+        try (Connection connection = new Database().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                long id = resultSet.getLong("id");
+                String name = resultSet.getString("name");
+                clientsList.add(new Client(id,name));
+            }
+            resultSet.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return clientsList;
     }
 }
